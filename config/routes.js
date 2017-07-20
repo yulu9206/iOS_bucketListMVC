@@ -16,6 +16,30 @@ function getAllTasks(req, res){
   })
 }
 
+function getAllEqts(req, res){
+  Eqt.find({}, function (err, eqts) {
+    if (err) {
+        console.error(`Error: ${error}`)
+        res.send(`Error: ${error}`)
+    } else {
+        console.log(eqts)
+        res.send(eqts)
+        console.log ("db is trying to update data")
+    }
+  })
+}
+function addEqt(req, res){
+  Eqt.create(req.body, function (err, eqts) {
+    if (err) {
+        console.error(`Error: ${error}`)
+        res.send(`Error: ${error}`)
+    } else {
+        console.log(tasks)
+        res.send(eqts)
+        console.log ("db is trying to save data")
+    }
+  })
+}
 function addTask(req, res){
   Task.create(req.body, function (err, tasks) {
     if (err) {
@@ -56,7 +80,16 @@ function deleteTask(req, res){
     }
   })
 }
-
+router.route('/eqts')
+  .post(function (req, res) {
+  /** 
+  * Respond with all tasks stored on database if 'GET' request to route 
+  * '/tasks'; the only time we send an error back to the client
+  */
+    console.log ("server is trying to save data")
+    addEqt(req, res)
+})
+  
 router.route('/tasks')
   .post(function (req, res) {
   /** 

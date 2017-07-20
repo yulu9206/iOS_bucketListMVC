@@ -6,7 +6,7 @@
 // body to JSON) modules from node_modules
 var express = require('express')
 var bodyParser = require('body-parser')
-
+var Eqt = require('./models/Eqt')
 // Require user-created database configuration module 
 // & application routes module
 var database = require('./config/db')
@@ -28,3 +28,38 @@ app.use('/', routes)
 app.listen('8000', function () {
   console.info('Listening on 8000')
 })
+
+// API call
+var publishLoop  = function() {
+	var RTM = require("satori-rtm-sdk");
+
+	var endpoint = "wss://open-data.api.satori.com";
+	var appKey = "34F7F1Dc5e2B3d384DDABF2ab48CA04e";
+	var channel = "USGS-Earthquakes";
+
+	var client = new RTM(endpoint, appKey);
+
+	client.on('enter-connected', function () {
+	  console.log('Connected to Satori RTM!');
+	});
+
+	var subscription = client.subscribe(channel, RTM.SubscriptionMode.SIMPLE);
+
+	subscription.on('rtm/subscription/data', function (pdu) {
+	  pdu.body.messages.forEach(function (data) {
+	  	var quake = new Eqt({msg: data});
+	  	quake.save(function(err){
+	  		if (err) {
+	  			return err;
+	  		} else {
+	  			console.log("quake saved")
+	  			console.log(quake)
+	  		}
+	  	})
+	  });
+	});
+client.start();
+}
+
+setInterval(publishLoop, 600000);
+//db add function

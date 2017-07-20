@@ -15,6 +15,7 @@
     "angular2-cookie": "^1.2.6",
     "body-parser": "^1.15.0",
     "express": "^4.13.4",
-    "mongoose": "^4.10.7"
+    "mongoose": "^4.10.7",
+    "satori-rtm-sdk": "^1.0.2"
   }
 }
